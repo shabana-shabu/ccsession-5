@@ -1,0 +1,121 @@
+0.Is JavaScript single threaded or multithreaded? What does it mean to be any?
+Ans:JavaScript is a single-threaded language because while running code on a single thread, it can be really easy to implement as we don’t have to deal with the complicated scenarios that arise in the multi-threaded environment like deadlock.Since, JavaScript is a single-threaded language, it is synchronous in nature.
+1.: What are promises? Why are they used?
+Ans:Promises in javascript represent processes that are already happening,which can be chained with calback functions.A promise is said to be settled if it is either fulfilled or rejected,but not pending. 
+ Promise is used because promises allows errors to be passed down the chain and handled in one common place without having to put in layers of manual error handling.Promise objects are used to perform asynchronous functions.
+2.What do async/await do? Explain it in your own words.
+Ans:Async and await - the two keywords that will help us clean up our asynchronous code
+Async - declares an asynchronous function 
+(async function someName(){...}).
+Automatically transforms a regular function into a Promise.
+When called async functions resolve with whatever is returned in their body.
+Async functions enable the use of await.
+the async keyword is placed before a function, like this:
+async function f() {
+  return 1;
+}
+The word “async” before a function means one simple thing: a function always returns a promise. Other values are wrapped in a resolved promise automatically.
+For instance, this function returns a resolved promise with the result of 1; 
+async function f() {
+  return 100;
+}
+f().then(alert); // 1
+Await - pauses the execution of async functions. 
+(var result = await someAsyncCall();).
+When placed in front of a Promise call, await forces the rest of the code to wait until that Promise finishes and returns a result.
+
+Await works only with Promises, it does not work with callbacks.
+Await can only be used inside async functions.
+let value = await promise;// works only inside async functions
+The keyword await makes JavaScript wait until that promise settles and returns its result.
+Here’s an example with a promise that resolves in 1 second:
+
+async function f() {
+
+  let promise = new Promise((resolve, reject) => {
+    setTimeout(() => resolve("done!"), 1000)
+  });
+
+  let result = await promise; // wait until the promise resolves (*)
+
+  alert(result); // "done!"
+}
+
+f();
+The function execution “pauses” at the line (*) and resumes when the promise settles, with result becoming its result. So the code above shows “done!” in one second.
+3.what do async functions return?
+Ans:Async functions always return a promise. If the return value of an async function is not explicitly a promise, it will be implicitly wrapped in a promise.
+For example, the following:
+async function foo() {
+   return 1
+}
+function foo() {
+   return Promise.resolve(1)
+4.How do we catch errors in async functions?  
+Ans:Async functions  do not throw errors in the strict sense. Async functions  always return a Promise, either resolved or rejected.So attaching then() and catch() Or wrap the method inside try/catch is necessary
+5.What do then() consumers in promises return?
+Ans:the then() function returns a new promise, different from the original:The arguments to then are optional
+6: Write the explicit equivalent of Promise.resolve(100);
+Ans:async function f() {
+  return 100;
+}
+f().then(alert);
+7: What are the states a promise can be in?
+Ans:Promise is in one of these states:
+pending: initial state, neither fulfilled nor rejected.
+fulfilled: meaning that the operation was completed successfully.
+rejected: meaning that the operation failed.
+8: What happens if neither resolve nor reject is called within a promise?
+Ans:A promise is just an object with properties in Javascript. So failing to resolve or reject a promise just fails to ever change the state from "pending" to anything else. This doesn't cause any fundamental problem in Javascript because a promise is just a regular Javascript object. The promise will still get garbage collected (even if still pending) if no code keeps a reference to the promise.
+9: What happens if multiple resolve or reject is called within a promise?
+Ans:A promise cannot be resolved or rejected more than once. Once the promise is resolved, fulfilled, or rejected, further calls to resolve or reject  are ignored.
+10: What does the finally() method on promise do? Provide your explanation.
+Ans:The finally() is always executed whether the promise is fulfilled or rejected. In other words, the finally() is executed when the promise is settled. The finally() method was introduced in ES2018. In the finally() method, you can place the code that cleans up the resource when the promise is settled, regardless of its outcome. This allows you to avoid duplicate code in the then() and catch() methods.
+promise.then(result => {
+        // process the result
+    })
+    .catch(error => {
+        // handle the error
+    })
+    .finally(() => {
+        // clean up the resources
+    });
+11: What are microtasks in JS?
+Ans:A microtask is a short function which is executed after the function or program which created it exits and only if the JavaScript execution stack is empty, but before returning control to the event loop being used by the user agent to drive the script's execution environment.
+12: Write a simple print() function that accepts a callback, which gets called after 3 seconds. The callback function could be anything that prints out on the screen.
+Ans:const message = function() {  
+    console.log("This message is shown after 3 seconds");
+}
+setTimeout(message, 3000);
+13: Delay with a promise
+We know that setTimeout() uses a callback.
+Create a promise based alternative.
+The function named delay(ms) should return a promise.
+We should be able to achieve something like this:
+delay(3000).then(() => alert('Should alert after 3 seconds'))
+Ans:function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+delay(3000).then(() => alert('runs after 3 seconds'));
+14: Consume the following promise using `await`.
+let promise = new Promise((res,rej) => {
+    setTimeout(() => res("Resolved!"),3000)
+} );
+promise.then((res) => alert("Response value is: " + res)); // this line needs to get replaced.
+Ans:let promise = new Promise((res,rej) => {
+    setTimeout(() => res("Resolved!"),3000)
+} );
+let result=await promise;
+alert (result);
+
+15: What is the difference between the following two lines of code:
+promise.then(f1).catch(f2);
+and
+promise.then(f1, f2);
+Provide an explanation for your answer.
+Ans:
+promise.then(f1).catch(f2);
+They are not equal,The difference is that if an error happens in f1, then it is handled by .catch
+promise.then(f1, f2);
+That’s because an error is passed down the chain, and in the second code piece there’s no chain below f1.
+In other words, .then passes results/errors to the next .then/catch. So in the first example, there’s a catch below, and in the second one there isn’t, so the error is unhandled.
